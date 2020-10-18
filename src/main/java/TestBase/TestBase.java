@@ -18,8 +18,10 @@ public class TestBase {
 		try {
 			prop = new Properties();
 			FileInputStream ip = new FileInputStream(
-					"C:\\Users\\Amruta.Yembuluru\\eclipse-workspace\\4cpluslifetest\\src\\main\\java\\life4cplusconfig\\config.properties");
+					"/Users/ratnakar/Desktop/Amrutaautomation_October/AmrutaProject/src/main/java/Config/config.properties");
 			prop.load(ip);
+			
+			
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -33,12 +35,12 @@ public class TestBase {
 		String browserName = prop.getProperty("browser");
 		if (browserName.equals("chrome")) {
 			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\Amruta.Yembuluru\\driver\\chromedriver_win32\\chromedriver.exe");
+					"\\Users\\ratnakar\\Downloads\\chromedriver");
 
 			driver = new ChromeDriver();
 		} else if (browserName.equals("FF")) {
 			System.setProperty("webdriver.gecko.driver",
-					"C:\\Users\\amruta_yembuluru\\driver\\chromedriver_win32\\geckodriver.exe");
+					"\\Users\\ratnakar\\Downloads\\geckodriver.exe");
 
 			driver = new FirefoxDriver();
 		}

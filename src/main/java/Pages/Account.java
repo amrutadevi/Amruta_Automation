@@ -6,13 +6,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import TestBase.TestBase;
 import TestUtil.TestUtil;
 
-
-public class Account extends TestBase {
-
+public class Account {
+	
 	private WebDriver driver;
+	
 	public Account(WebDriver driver) {
 		this.driver = driver;
 	}

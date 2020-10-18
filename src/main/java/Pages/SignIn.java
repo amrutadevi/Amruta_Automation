@@ -10,6 +10,7 @@ package Pages;
 	public class SignIn{
 		
 		private WebDriver driver;
+	
 		
 		public SignIn(WebDriver driver) {
 			this.driver = driver;
@@ -32,19 +33,40 @@ package Pages;
 		}
 		
 		
-		public void setEmailField(String mail) {
+		public void setEmailField() {
 			WebElement email = this.getSignInEmailField();
 			email.clear();
-			email.sendKeys(mail);
+			email.sendKeys(TestUtil.generateEmail(13));
 		}
 		
-		public void setPasswordField(String pass) {
+		public void setPasswordField() {
 			WebElement password = this.getSignInPasswordField();
 			password.clear();
-			password.sendKeys(pass);
+			password.sendKeys(TestUtil.generateRandomString(9));
 		}
 		
+		public void setEmailField2(String emailid) {
+			WebElement email = this.getSignInEmailField();
+			email.clear();
+			email.sendKeys(emailid);
+		}
 		
+		public void setPasswordField2(String Pwd) {
+			WebElement password = this.getSignInPasswordField();
+			password.clear();
+			password.sendKeys(Pwd);
+		}
+		public void setEmailField1() {
+			WebElement email = this.getSignInEmailField();
+			email.clear();
+			email.sendKeys(TestUtil.generateEmail(0));
+		}
+		
+		public void setPasswordField1() {
+			WebElement password = this.getSignInPasswordField();
+			password.clear();
+			password.sendKeys(TestUtil.generateRandomString(0));
+		}	
 		
 		public WebElement getEmailRequiredError() {
 			return TestUtil.waitForElementPresence(driver, By.xpath("//li[contains(text(), \"An email address required.\")]"), 30);
@@ -73,6 +95,11 @@ package Pages;
 		
 		public WebElement getEmailHighlightedGreen() {
 			return TestUtil.waitForElementPresence(driver, By.xpath("//div[@class=\"form-group form-ok\"]//input[@id=\"email\"]"), 30);
+		}
+		
+		public void screenshot() throws InterruptedException {
+			Thread.sleep(3000);
+			TestUtil.captureScreenShot("signin", driver);
 		}
 	}
 

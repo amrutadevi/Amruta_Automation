@@ -1,54 +1,54 @@
 package PageTests;
 
 
-	import org.testng.annotations.AfterClass;
+	import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.AssertJUnit;
-	import org.openqa.selenium.WebDriver;
-	import org.openqa.selenium.chrome.ChromeDriver;
-	import org.openqa.selenium.interactions.Actions;
-	import org.testng.Assert;
-	import org.testng.annotations.AfterClass;
-	import org.testng.annotations.Test;
 
-	import Pages.Account;
-	import Pages.Cart;
-	import Pages.CartSummary;
-	import Pages.Clothes;
-	import Pages.ShoppingActions;
-	import Pages.SignIn;
+import Pages.Cart;
+import Pages.CreateAccountForm;
+import Pages.CreateAccountPage;
+import Pages.DressesPage;
+import Pages.ShoppingActions;
+import Pages.SignIn;
 import TestBase.TestBase;
-	
+
 
 	public class Tests extends TestBase{
 
-		private WebDriver driver;
+		WebDriver driver;
 		private Actions action;
-
-		private Clothes clothes;
-		private Cart cart;
+		private DressesPage dressesPage;
+		private Cart cart;		
 		private ShoppingActions shoppingActions;
-		private CartSummary summary;
 	    private SignIn signin;
-		private Account account;
+		private CreateAccountPage createAccountPage; 
+		private CreateAccountForm createAcccountForm; 
+		
 		public Tests() {
 			super();
 		}
+		@BeforeClass
 
 		public void setup() {
-			System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver", "drivers/chromedriver");
 			driver = new ChromeDriver();
 
 			action = new Actions(driver);
-
-			clothes = new Clothes(driver);
+			dressesPage = new DressesPage(driver);
 			cart = new Cart(driver);
 			shoppingActions = new ShoppingActions(driver);
 			signin= new SignIn(driver);
-			summary = new CartSummary(driver);
-			account = new Account(driver);
-
-			String baseUrl = "http://automationpractice.com/index.php";
+			createAccountPage = new CreateAccountPage(driver); 
+			createAcccountForm = new CreateAccountForm(driver); 
+			
+			String baseUrl = "http://automationpractice.com/index.php?controller=authentication";
+			
 			driver.manage().window().maximize();
 			driver.get(baseUrl);
 			
@@ -56,222 +56,232 @@ import TestBase.TestBase;
 		
 		@AfterClass
 		public void closeAll() {
-			account.getAccountLogout().click();
 			driver.quit();
 		}
+		
 
 		@Test(priority = 1)
-		public void purchaseitems() {
-			AssertJUnit.assertTrue(clothes.getDressesBtn().isDisplayed());
-
-			action.moveToElement(clothes.getDressesBtn()).perform();
-
-			AssertJUnit.assertTrue(clothes.getSummerDressesBtn().isDisplayed());
-			AssertJUnit.assertTrue(clothes.getCasualDressesBtn().isDisplayed());
-			AssertJUnit.assertTrue(clothes.getEveningDressesBtn().isDisplayed());
-
-			action.moveToElement(clothes.getSummerDressesBtn()).perform();
-			clothes.getSummerDressesBtn().click();
-
-			AssertJUnit.assertTrue(clothes.getSummerDressProduct(1).isDisplayed());
-			AssertJUnit.assertTrue(clothes.getSummerDressProduct(2).isDisplayed());
-			AssertJUnit.assertTrue(clothes.getSummerDressProduct(3).isDisplayed());
-			AssertJUnit.assertEquals(clothes.getDressesCount().size(), 2);
-
-			action.moveToElement(clothes.getSummerDressProduct(1)).perform();
-			action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
-
-			AssertJUnit.assertTrue(shoppingActions.getAddToCartBtn().isDisplayed());
-
-			action.click(shoppingActions.getAddToCartBtn()).build().perform();
-			action.click(shoppingActions.getContinueShopingBtn()).build().perform();
-
-			AssertJUnit.assertTrue(shoppingActions.getContinueShopingBtn().isDisplayed());
-
-			action.moveToElement(cart.getCartTab()).perform();
-
-			AssertJUnit.assertEquals(cart.getCartProductsQty().size(), 1);
-
-			action.moveToElement(clothes.getDressesBtn()).perform();
-
-			AssertJUnit.assertTrue(clothes.getCasualDressesBtn().isDisplayed());
-
-			action.moveToElement(clothes.getCasualDressesBtn()).perform();
-			clothes.getCasualDressesBtn().click();
-			action.moveToElement(clothes.getCasualDressProduct(1)).perform();
-			action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
-			action.click(shoppingActions.getAddToCartBtn()).build().perform();
-
-			AssertJUnit.assertTrue(shoppingActions.getAddToCartBtn().isDisplayed());
-
-			action.click(shoppingActions.getContinueShopingBtn()).build().perform();
-			action.moveToElement(cart.getCartTab()).perform();
-
-			AssertJUnit.assertEquals(cart.getCartProductsQty().size(), 2);
-			AssertJUnit.assertEquals(summary.getCartSummBillingAdressName().getText(), "John Doe");
-			AssertJUnit.assertEquals(summary.getCartSummBillingAdressOne().getText(), "Centar");
-			AssertJUnit.assertEquals(summary.getCartSummBillingAdressCityState().getText(), "Novi Sad, Connecticut 21000");
-			AssertJUnit.assertEquals(summary.getCartSummBillingAdressCountry().getText(), "United States");
-			AssertJUnit.assertEquals(summary.getCartSummBillingAdressHomePhone().getText(), "056");
-			AssertJUnit.assertEquals(summary.getCartSummBillingAdressMobile().getText(), "066");
-			summary.getCartProceedBtnTwo().click();
-			summary.getCartProceedBtnTwo().click();
-
-			action.moveToElement(summary.getCartSummTermsOfServiceDialog()).perform();
-
-			AssertJUnit.assertTrue(summary.getCartSummTermsOfServiceDialog().isDisplayed());
-
-			action.moveToElement(summary.getCartSummTermsOfServiceDialogClose()).perform();
-			action.click(summary.getCartSummTermsOfServiceDialogClose()).build().perform();
-
-			driver.navigate().refresh();
-
-			summary.getCartSummTermsOfServiceCheck().click();
-			summary.getCartProceedBtnTwo().click();
+		public void loginPage() {
 		
-			summary.getCartSummPayByBankWire().click();
-
-			AssertJUnit.assertEquals(summary.getCartSummPayByBankWireConfirm().getText(), "BANK-WIRE PAYMENT.");
-
-			summary.getCartSummOtherPaymentMethods().click();
-			summary.getCartSummPayByCheck().click();
-
-			AssertJUnit.assertEquals(summary.getCartSummPayByCheckConfirm().getText(), "CHECK PAYMENT");
-			summary.getCartSummConfirmOrderBtn().click();
-
-			AssertJUnit.assertTrue(summary.getCartSummSuccessMsg().isDisplayed());
-			AssertJUnit.assertEquals(summary.getCartSummSuccessMsg().getText(), "Your order on My Store is complete.");
-		
-		
+			Assert.assertTrue(signin.getSignInForm().isDisplayed());
+			Assert.assertTrue(signin.getSignInEmailField().isDisplayed());
+			Assert.assertTrue(signin.getSignInPasswordField().isDisplayed());
+			Assert.assertTrue(signin.getSignInBtn().isEnabled());
 		}
 
+		@Test(priority = 2)
+		public void invalidCredentials() {
+			
+
+			signin.setEmailField();
+			signin.setPasswordField();
+			signin.getSignInBtn().click();
+
+			Assert.assertTrue(signin.getAuthenticationFailedError().isDisplayed());
+
+			signin.setEmailField();
+			signin.setPasswordField();
+			signin.getSignInBtn().click();
+
+			Assert.assertTrue(signin.getAuthenticationFailedError().isDisplayed());
+
+			signin.setEmailField();
+			signin.setPasswordField();
+			signin.getSignInBtn().click();
+
+			Assert.assertTrue(signin.getAuthenticationFailedError().isDisplayed());
+
+		}
+		
 		@Test(priority = 3)
-		public void changethesizeoftheitem() {
-			AssertJUnit.assertEquals(summary.getCartSummTotalProductsPrice().getText(), "$130.96");
-			AssertJUnit.assertEquals(summary.getCartSummaryTotalPrice().getText(), "$132.96");
-			AssertJUnit.assertEquals(summary.getCartSummTotalShipping().getText(), "$2.00");
-
-			summary.getCartSummQtyPlus(1).click();
-			driver.navigate().refresh();
-
-			AssertJUnit.assertEquals(summary.getCartSummTotalProductsPrice().getText(), "$159.94");
-			AssertJUnit.assertEquals(summary.getCartSummaryTotalPrice().getText(), "$161.94");
-			AssertJUnit.assertEquals(summary.getCartSummTotalShipping().getText(), "$2.00");
+		public void screenshottest() throws InterruptedException {
+			signin.screenshot();
+			
 		}
-
-		
-
-		
 
 		@Test(priority = 4)
-		public void Addthatitemtoyourbasket() {
-			AssertJUnit.assertEquals(cart.getCartProductsQty().size(), 2);
+		public void loginWithoutCredentials() {
+			signin.setEmailField1();
+			signin.setPasswordField();
+			signin.getSignInBtn().click();
 
-			action.moveToElement(clothes.getDressesBtn()).perform();
-			action.moveToElement(clothes.getEveningDressesBtn()).perform();
-			action.moveToElement(clothes.getEveningDressProduct(1)).perform();
-			action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
-			action.click(shoppingActions.getAddToCartBtn()).build().perform();
-			action.click(shoppingActions.getContinueShopingBtn()).build().perform();
+			Assert.assertTrue(signin.getEmailRequiredError().isDisplayed());
 
-			action.moveToElement(cart.getCartTab()).perform();
-			action.moveToElement(cart.getCartProductsQty(1)).perform();
+			signin.setEmailField();
+			signin.setPasswordField1();
+			signin.getSignInBtn().click();
 
-			AssertJUnit.assertEquals(cart.getCartProductsQty(1).getText(), "1");
+			Assert.assertTrue(signin.getPasswordRequiredError().isDisplayed());
 
-			action.moveToElement(cart.getCartProductsQty(2)).perform();
+			signin.setEmailField1();
+			signin.setPasswordField1();
+			signin.getSignInBtn().click();
 
-			AssertJUnit.assertEquals(cart.getCartProductsQty(2).getText(), "2");
-
-			action.moveToElement(cart.getCartShipingCost()).perform();
-
-			AssertJUnit.assertEquals(cart.getCartShipingCost().getText(), "$2.00");
-
-			action.moveToElement(cart.getCartTotalPrice()).perform();
-
-			AssertJUnit.assertEquals(cart.getCartTotalPrice().getText(), "$132.96");
+			Assert.assertTrue(signin.getEmailRequiredError().isDisplayed());
 		}
 
 		@Test(priority = 5)
-		public void continueShopping() {
-			action.moveToElement(cart.getCartTab()).perform();
-			action.moveToElement(cart.getCartTabCheckOutBtn()).perform();
+		public void emailvalidation() {
+			signin.setEmailField2("email");
+			signin.getSignInPasswordField().click();
 
-			AssertJUnit.assertTrue(cart.getCartTabCheckOutBtn().isDisplayed());
+			Assert.assertTrue(signin.getEmailHighlightedRed().isDisplayed());
 
-			action.click(cart.getCartTabCheckOutBtn()).build().perform();
-			;
+			signin.setEmailField2("email@email");
+			signin.getSignInPasswordField().click();
 
-			AssertJUnit.assertTrue(summary.getCartSummaryTable().isDisplayed());
-			AssertJUnit.assertEquals(summary.getCartSummTotalProductsNum().size(), 2);
-			AssertJUnit.assertEquals(summary.getCartSummTotalProductsPrice().getText(), "$130.96");
-			AssertJUnit.assertEquals(summary.getCartSummaryTotalPrice().getText(), "$132.96");
-			AssertJUnit.assertEquals(summary.getCartSummTotalShipping().getText(), "$2.00");
-			AssertJUnit.assertTrue(summary.getCartSummQtyPlus(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyPlus(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyMinus(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyMinus(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyInput(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyInput(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyPlus(2).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyPlus(2).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyMinus(2).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyMinus(2).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyInput(2).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummQtyInput(2).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummDeleteBtn(1).isDisplayed());
-			AssertJUnit.assertTrue(summary.getCartSummDeleteBtn(2).isDisplayed());
+			Assert.assertTrue(signin.getEmailHighlightedRed().isDisplayed());
+
+			signin.setEmailField2("email@email.email");
+			signin.getSignInPasswordField().click();
+
+			Assert.assertTrue(signin.getEmailHighlightedGreen().isDisplayed());
+			signin.setEmailField2("Hellotester123@gmail.com");
+			signin.setPasswordField2("tester123");
+			signin.getSignInBtn().click();
+		//	Assert.assertTrue(createAccountForm.successfullyCreatedAccount().isDisplayed());
 		}
 			
+		@Test(priority = 6)
+		public void MandatoryFieldsEmpty() {
+			System.setProperty("webdriver.chrome.driver", "drivers/chromedriver");
+			driver.get("http://automationpractice.com/index.php?controller=authentication&back=my-account");
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+		    js.executeScript("window.scrollBy(0,300)");
+			createAccountPage.setCreateAccountEmailField();
+			createAccountPage.getCreateAccountBtn().click();
+			createAcccountForm.getAddressAliasField().clear();
+			createAcccountForm.setCustomerEmailField("");
+			createAcccountForm.selectCountry("-");
+			createAcccountForm.getRegisterBtn().click();
+		//	Assert.assertTrue(createAcccountForm.getPhoneNumberError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getLastNameError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getFirstNameError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getEmailRequiredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getPasswordRequiredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getCountryRequiredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getAddressRequiredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getAddressAliasRequiredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getCityRequiredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getCountryUnselectedError().isDisplayed());
 
+			createAcccountForm.selectCountry("United States");
+			createAcccountForm.getRegisterBtn().click();
+
+			Assert.assertTrue(createAcccountForm.getStateRequredError().isDisplayed());
+			Assert.assertTrue(createAcccountForm.getPostalCodeError().isDisplayed());
+		}
+
+		
+		
+		@Test(priority = 7)
+		public void successfulRegistration() {
+			System.setProperty("webdriver.chrome.driver", "drivers/chromedriver");
+			driver.get("http://automationpractice.com/index.php?controller=authentication&back=my-account");
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+		    js.executeScript("window.scrollBy(0,300)");
+			createAccountPage.setCreateAccountEmailField();
+			createAccountPage.getCreateAccountBtn().click();
+			createAcccountForm.setCustomerFirstNameField();
+			createAcccountForm.setCustomerLastNameField();
+			createAcccountForm.setCustomerPasswordField("Tester123");
+			createAcccountForm.selectCustomerDateOfBirthDay("20");
+			createAcccountForm.selectCustomerDateOfBirthMonth("10");
+			createAcccountForm.selectCustomerDateOfBirthYear("1989");
+			createAcccountForm.setAddressField("London");
+			createAcccountForm.setCityField("West Area");
+			createAcccountForm.selectState("3");
+			createAcccountForm.setPostalCodeField("90000");
+			//createAcccountForm.selectCountry("3");
+			createAcccountForm.setHomePhoneField("056");
+			createAcccountForm.setMobilePhoneField("066");
+			createAcccountForm.setAddressAliasField("My Address");
+			createAcccountForm.getRegisterBtn().click();
+
+		//	Assert.assertTrue(createAcccountForm.getEmailBeenRegistered().isDisplayed());
+
+		/*	createAcccountForm.setCustomerEmailField("yamrutadevi@gmail.com");
+			createAcccountForm.setCustomerPasswordField("tester123");
+			createAcccountForm.getRegisterBtn().click();
+
+			//Assert.assertTrue(createAcccountForm.successfullyCreatedAccount().isDisplayed());
+		*/
+			}
+		
 		@Test(priority = 8)
-		public void checkIsOrderVisibleInOrderHistorySection() {
-			account.getAccountBtn().click();
+		public void purchaseitems() {
+		
+			Assert.assertTrue(dressesPage.getDressesBtn().isDisplayed());
 
-			AssertJUnit.assertTrue(account.getAccountOrderHistoryBtn().isDisplayed());
+			action.moveToElement(dressesPage.getDressesBtn()).perform();
 
-			account.getAccountOrderHistoryBtn().click();
+			Assert.assertTrue(dressesPage.getSummerDressesBtn().isDisplayed());
+			Assert.assertTrue(dressesPage.getCasualDressesBtn().isDisplayed());
+			Assert.assertTrue(dressesPage.getEveningDressesBtn().isDisplayed());
 
-			AssertJUnit.assertTrue(account.getAccountOrderListTable().isDisplayed());
+			action.moveToElement(dressesPage.getSummerDressesBtn()).perform();
+			dressesPage.getSummerDressesBtn().click();
 
-			account.getAccountBtn().click();
-			account.getAccountOrderHistoryBtn().click();
-
-			AssertJUnit.assertEquals(account.getAccountOrdersLis().size(), 1);
-			action.moveToElement(clothes.getSummerDressesBtn()).perform();
-			clothes.getSummerDressesBtn().click();
-
-			AssertJUnit.assertTrue(clothes.getSummerDressProduct(1).isDisplayed());
-			AssertJUnit.assertTrue(clothes.getSummerDressProduct(2).isDisplayed());
-			AssertJUnit.assertTrue(clothes.getSummerDressProduct(3).isDisplayed());
-			AssertJUnit.assertEquals(clothes.getDressesCount().size(), 2);
-
-			action.moveToElement(clothes.getSummerDressProduct(1)).perform();
+			action.moveToElement(dressesPage.getprintedSummerdress(1)).perform();
+			
+			//action.moveToElement(clothes.getSummerDressProduct(1)).perform();
 			action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
 
-			AssertJUnit.assertTrue(shoppingActions.getAddToCartBtn().isDisplayed());
+			action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
+
+			Assert.assertTrue(shoppingActions.getAddToCartBtn().isDisplayed());
 
 			action.click(shoppingActions.getAddToCartBtn()).build().perform();
 			action.click(shoppingActions.getContinueShopingBtn()).build().perform();
 
-			AssertJUnit.assertTrue(shoppingActions.getContinueShopingBtn().isDisplayed());
+			Assert.assertTrue(shoppingActions.getContinueShopingBtn().isDisplayed());
 
 			action.moveToElement(cart.getCartTab()).perform();
 
-			AssertJUnit.assertEquals(cart.getCartProductsQty().size(), 1);
+			Assert.assertEquals(cart.getCartProductsQty().size(), 1);
 
-			action.moveToElement(clothes.getDressesBtn()).perform();
+			action.moveToElement(dressesPage.getDressesBtn()).perform();
 
-			AssertJUnit.assertTrue(clothes.getCasualDressesBtn().isDisplayed());
+			Assert.assertTrue(dressesPage.getCasualDressesBtn().isDisplayed());
 
-			action.moveToElement(clothes.getCasualDressesBtn()).perform();
-			clothes.getCasualDressesBtn().click();
-			action.moveToElement(clothes.getCasualDressProduct(1)).perform();
+			action.moveToElement(dressesPage.getCasualDressesBtn()).perform();
+			dressesPage.getCasualDressesBtn().click();
+			action.moveToElement(dressesPage.getCasualDressProduct(1)).perform();
 			action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
 			action.click(shoppingActions.getAddToCartBtn()).build().perform();
 
-			AssertJUnit.assertTrue(shoppingActions.getAddToCartBtn().isDisplayed());
+			Assert.assertTrue(shoppingActions.getAddToCartBtn().isDisplayed());
 
 			action.click(shoppingActions.getContinueShopingBtn()).build().perform();
+			action.moveToElement(cart.getCartTab()).perform();
+
+			Assert.assertEquals(cart.getCartProductsQty().size(), 2);
 		}
-}
+			
+			@Test(priority = 9)
+			public void validatingCartProductsQty() {
+				Assert.assertEquals(cart.getCartProductsQty().size(), 2);
+
+				action.moveToElement(dressesPage.getDressesBtn()).perform();
+				action.moveToElement(dressesPage.getEveningDressesBtn()).perform();
+				action.moveToElement(dressesPage.getEveningDressProduct(1)).perform();
+				action.moveToElement(shoppingActions.getAddToCartBtn()).perform();
+				action.click(shoppingActions.getAddToCartBtn()).build().perform();
+				action.click(shoppingActions.getContinueShopingBtn()).build().perform();
+
+				action.moveToElement(cart.getCartTab()).perform();
+				action.moveToElement(cart.getCartProductsQty(1)).perform();
+
+				Assert.assertEquals(cart.getCartProductsQty(1).getText(), "1");
+
+				action.moveToElement(cart.getCartProductsQty(2)).perform();
+
+				Assert.assertEquals(cart.getCartProductsQty(2).getText(), "2");
+
+			}
+
+				
+	}
+		
+		
+

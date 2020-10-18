@@ -26,6 +26,9 @@ package Pages;
 		public WebElement getContinueShopingBtn() {
 			return TestUtil.waitToBeClickable(driver, By.xpath("//span[@title=\"Continue shopping\"]"), 30);
 		}
+		public WebElement getContinueShopingBtn1() {
+		return TestUtil.waitToBeClickable(driver, By.xpath("//*[@id=\"category\"]span[contains(text(),\"checkout\")]"), 30);
+	    } //*[@id="category"]
 		
 		public WebElement getProceedToCheckoutBtn() {
 			return TestUtil.waitToBeClickable(driver, By.xpath("//span[contains(text(), \"Proceed to checkout\")]"), 30);
