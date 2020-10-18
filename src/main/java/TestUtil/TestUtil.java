@@ -39,7 +39,7 @@ public class TestUtil {
 			System.out.println("Screenshotcaptured");
 		} catch (Exception e) {
 
-			System.out.println("Exception while taking screenshot" + e.getMessage());
+			System.out.println("Exception while taking screenshots" + e.getMessage());
 		}
 
 	}

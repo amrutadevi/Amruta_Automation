@@ -5,5 +5,5 @@
     <classes>
       <class name="PageTests.Tests"/>
     </classes>
-  </test> <!-- Test -->
+  </test> <!-- Test/compile -->
 </suite> <!-- Suite -->
